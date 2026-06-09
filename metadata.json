@@ -1,0 +1,8 @@
+{
+  "name": "Remix: Company Time Capsule",
+  "description": "A magical time capsule for company employees to upload photos, emails, and wishes, featuring a stunning interactive dark cosmic space and particle-burst reveal.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
