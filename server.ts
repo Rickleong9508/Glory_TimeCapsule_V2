@@ -9,15 +9,12 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const DB_DIR = path.join(process.cwd(), "data");
 
 const app = express();
 const PORT = 3000;
 
 app.use(express.json({ limit: "20mb" })); // Support large base64 image uploads
-
-const DB_DIR = path.join(__dirname, "data");
 const DB_FILE = path.join(DB_DIR, "wishes.json");
 const POSTER_FILE = path.join(DB_DIR, "poster_templates.json");
 
