@@ -322,8 +322,10 @@ async function migrateLocalDataToSupabase() {
 
 // --- API ROUTES ---
 
+const apiRouter = express.Router();
+
 // Healthcheck
-app.get("/api/health", (req, res) => {
+apiRouter.get("/health", (req, res) => {
   res.json({ status: "ok", time: new Date().toISOString() });
 });
 
@@ -339,10 +341,10 @@ const supabaseConfigGuard = (req: express.Request, res: express.Response, next: 
   next();
 };
 
-app.use("/api", supabaseConfigGuard);
+apiRouter.use(supabaseConfigGuard);
 
 // GET poster templates
-app.get("/api/poster-templates", async (req, res) => {
+apiRouter.get("/poster-templates", async (req, res) => {
   try {
     const { data, error } = await supabase
       .from("poster_templates")
@@ -361,7 +363,7 @@ app.get("/api/poster-templates", async (req, res) => {
 });
 
 // POST update poster template
-app.post("/api/poster-templates", async (req, res) => {
+apiRouter.post("/poster-templates", async (req, res) => {
   try {
     const { group, background, photoX, photoY, photoSize, nameX, nameY, nameColor, nameSize, nameAlign, emailX, emailY, emailColor, emailSize, emailAlign, groupX, groupY, groupColor, groupSize, groupVisible, groupAlign, goalX, goalY, goalWidth, goalColor, goalSize, goalAlign, goalBgVisible, goalPaddingTop, goalPaddingBottom, goalPaddingLeft, goalPaddingRight } = req.body;
     
@@ -438,7 +440,7 @@ app.post("/api/poster-templates", async (req, res) => {
 });
 
 // Copy poster template settings
-app.post("/api/poster-templates/copy", async (req, res) => {
+apiRouter.post("/poster-templates/copy", async (req, res) => {
   try {
     const { sourceGroup, targetGroup } = req.body;
     if (!sourceGroup || !targetGroup) {
@@ -481,7 +483,7 @@ app.post("/api/poster-templates/copy", async (req, res) => {
 });
 
 // Get all wishes
-app.get("/api/wishes", async (req, res) => {
+apiRouter.get("/wishes", async (req, res) => {
   try {
     const { data, error } = await supabase
       .from("wishes")
@@ -498,7 +500,7 @@ app.get("/api/wishes", async (req, res) => {
 });
 
 // Query user's exact wish by Email or Username
-app.post("/api/wishes/query", async (req, res) => {
+apiRouter.post("/wishes/query", async (req, res) => {
   try {
     const { identifier } = req.body;
     if (!identifier || typeof identifier !== "string") {
@@ -531,7 +533,7 @@ app.post("/api/wishes/query", async (req, res) => {
 });
 
 // Add high-resolution wish
-app.post("/api/wishes", async (req, res) => {
+apiRouter.post("/wishes", async (req, res) => {
   try {
     const { id, email, username, wish, photoUrl, group } = req.body;
 
@@ -595,7 +597,7 @@ app.post("/api/wishes", async (req, res) => {
 });
 
 // Delete a wish
-app.delete("/api/wishes/:id", async (req, res) => {
+apiRouter.delete("/wishes/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -618,6 +620,29 @@ app.delete("/api/wishes/:id", async (req, res) => {
   } catch (err: any) {
     console.error("Error deleting wish:", err);
     res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Mount the router at both /api and / to handle Vercel path stripping
+app.use("/api", apiRouter);
+app.use("/", apiRouter);
+
+// Catch-all API 404 handler to return JSON instead of HTML
+app.use((req, res, next) => {
+  if (req.path.startsWith("/api") || req.path.startsWith("/wishes") || req.path.startsWith("/poster-templates") || req.path.startsWith("/health")) {
+    res.status(404).json({ success: false, error: `API route not found: ${req.method} ${req.path}` });
+  } else {
+    next();
+  }
+});
+
+// Catch-all generic error handler for API routes to prevent HTML error responses
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  if (req.path.startsWith("/api") || req.path.startsWith("/wishes") || req.path.startsWith("/poster-templates")) {
+    console.error("Express Error:", err);
+    res.status(err.status || 500).json({ success: false, error: err.message || "Internal Server Error" });
+  } else {
+    next(err);
   }
 });
 
