@@ -455,6 +455,35 @@ export default function AdminPanel({ onClose, wishes, onRefresh, onPreviewWish, 
     }
   };
 
+  const handleCopyTemplate = async (sourceGroup: ColleagueGroup) => {
+    setIsSavingPoster(true);
+    setPosterMessage(null);
+    try {
+      const res = await fetch("/api/poster-templates/copy", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sourceGroup, targetGroup: selectedPosterGroup }),
+      });
+      const data = await res.json();
+      if (data.success && data.template) {
+        setPosterTemplates((prev) => ({
+          ...prev,
+          [selectedPosterGroup]: data.template,
+        }));
+        setPosterMessage({
+          type: "success",
+          text: lang === "zh" ? "海报配置复制成功并已应用！" : "Poster settings copied and applied successfully!"
+        });
+      } else {
+        setPosterMessage({ type: "error", text: data.error || "Failed to copy template" });
+      }
+    } catch {
+      setPosterMessage({ type: "error", text: "Connection error copying template settings." });
+    } finally {
+      setIsSavingPoster(false);
+    }
+  };
+
   const [draggingItem, setDraggingItem] = useState<"photo" | "name" | "group" | "email" | "goal" | null>(null);
 
   useEffect(() => {
@@ -901,6 +930,43 @@ export default function AdminPanel({ onClose, wishes, onRefresh, onPreviewWish, 
                     {t[`group${grp}` as keyof typeof t] || grp}
                   </button>
                 ))}
+              </div>
+
+              {/* Template settings replication helper */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-950 border border-slate-800/80 p-3.5 rounded-2xl mt-3 shadow-inner">
+                <div className="space-y-0.5 text-left">
+                  <p className="text-xs font-bold text-slate-200">
+                    {lang === "zh" ? "复用其他组别设置" : "Copy settings from another group"}
+                  </p>
+                  <p className="text-[10px] text-slate-500">
+                    {lang === "zh" ? "一键将选定组别的排版参数复制到当前编辑组别" : "Clone layout coordinate configurations from another group template."}
+                  </p>
+                </div>
+                <select
+                  onChange={async (e) => {
+                    const source = e.target.value;
+                    if (!source) return;
+                    
+                    const sourceLabel = t[`group${source as ColleagueGroup}` as keyof typeof t] || source;
+                    const targetLabel = t[`group${selectedPosterGroup}` as keyof typeof t] || selectedPosterGroup;
+                    
+                    if (window.confirm(lang === "zh" 
+                      ? `确定要将【${sourceLabel}】的排版坐标设置覆盖复制给【${targetLabel}】吗？`
+                      : `Are you sure you want to clone coordinates from [${sourceLabel}] to [${targetLabel}]?`
+                    )) {
+                      await handleCopyTemplate(source as ColleagueGroup);
+                    }
+                    e.target.value = ""; // reset selector
+                  }}
+                  className="bg-[#0f172a] text-slate-300 border border-slate-800 text-xs rounded-xl px-3 py-1.5 focus:outline-none focus:border-indigo-500 cursor-pointer"
+                >
+                  <option value="">{lang === "zh" ? "选择来源组别..." : "Select source..."}</option>
+                  {COLLEAGUE_GROUPS.filter(g => g !== selectedPosterGroup).map(g => (
+                    <option key={g} value={g}>
+                      {t[`group${g}` as keyof typeof t] || g}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 
@@ -1517,7 +1583,7 @@ export default function AdminPanel({ onClose, wishes, onRefresh, onPreviewWish, 
 
                       {/* Mock Photo */}
                       <div 
-                        className={`absolute -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing hover:outline hover:outline-1 hover:outline-dashed hover:outline-indigo-500/80 hover:outline-offset-2 transition-transform duration-75 ${draggingItem === 'photo' ? 'outline outline-1 outline-solid outline-indigo-500 ring-4 ring-indigo-500/20' : ''}`}
+                        className={`absolute -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing hover:outline hover:outline-1 hover:outline-dashed hover:outline-indigo-500/80 hover:outline-offset-2 ${draggingItem === 'photo' ? 'outline outline-1 outline-solid outline-indigo-500 ring-4 ring-indigo-500/20' : ''}`}
                         style={{
                           left: `${currentTpl.photoX}%`,
                           top: `${currentTpl.photoY}%`,
@@ -1542,7 +1608,7 @@ export default function AdminPanel({ onClose, wishes, onRefresh, onPreviewWish, 
 
                       {/* Mock Name */}
                       <div 
-                        className={`absolute cursor-grab active:cursor-grabbing hover:outline hover:outline-1 hover:outline-dashed hover:outline-indigo-500/80 hover:outline-offset-2 transition-transform duration-75 ${draggingItem === 'name' ? 'outline outline-1 outline-solid outline-indigo-500 ring-4 ring-indigo-500/20' : ''}`}
+                        className={`absolute cursor-grab active:cursor-grabbing hover:outline hover:outline-1 hover:outline-dashed hover:outline-indigo-500/80 hover:outline-offset-2 ${draggingItem === 'name' ? 'outline outline-1 outline-solid outline-indigo-500 ring-4 ring-indigo-500/20' : ''}`}
                         style={{
                           left: currentTpl.nameAlign === "right" ? "auto" : `${currentTpl.nameX}%`,
                           right: currentTpl.nameAlign === "right" ? `${100 - currentTpl.nameX}%` : "auto",
@@ -1568,7 +1634,7 @@ export default function AdminPanel({ onClose, wishes, onRefresh, onPreviewWish, 
                       {/* Mock Group Archetype Label */}
                       {currentTpl.groupVisible !== false && (
                         <div 
-                          className={`absolute cursor-grab active:cursor-grabbing hover:outline hover:outline-1 hover:outline-dashed hover:outline-indigo-500/80 hover:outline-offset-2 transition-transform duration-75 ${draggingItem === 'group' ? 'outline outline-1 outline-solid outline-indigo-500 ring-4 ring-indigo-500/20' : ''}`}
+                          className={`absolute cursor-grab active:cursor-grabbing hover:outline hover:outline-1 hover:outline-dashed hover:outline-indigo-500/80 hover:outline-offset-2 ${draggingItem === 'group' ? 'outline outline-1 outline-solid outline-indigo-500 ring-4 ring-indigo-500/20' : ''}`}
                           style={{
                             left: currentTpl.groupAlign === "right" ? "auto" : `${currentTpl.groupX !== undefined ? currentTpl.groupX : 50}%`,
                             right: currentTpl.groupAlign === "right" ? `${100 - (currentTpl.groupX !== undefined ? currentTpl.groupX : 50)}%` : "auto",
@@ -1594,7 +1660,7 @@ export default function AdminPanel({ onClose, wishes, onRefresh, onPreviewWish, 
 
                       {/* Mock Email */}
                       <div 
-                        className={`absolute cursor-grab active:cursor-grabbing hover:outline hover:outline-1 hover:outline-dashed hover:outline-indigo-500/80 hover:outline-offset-2 transition-transform duration-75 ${draggingItem === 'email' ? 'outline outline-1 outline-solid outline-indigo-500 ring-4 ring-indigo-500/20' : ''}`}
+                        className={`absolute cursor-grab active:cursor-grabbing hover:outline hover:outline-1 hover:outline-dashed hover:outline-indigo-500/80 hover:outline-offset-2 ${draggingItem === 'email' ? 'outline outline-1 outline-solid outline-indigo-500 ring-4 ring-indigo-500/20' : ''}`}
                         style={{
                           left: currentTpl.emailAlign === "right" ? "auto" : `${currentTpl.emailX !== undefined ? currentTpl.emailX : 50}%`,
                           right: currentTpl.emailAlign === "right" ? `${100 - (currentTpl.emailX !== undefined ? currentTpl.emailX : 50)}%` : "auto",
@@ -1619,7 +1685,7 @@ export default function AdminPanel({ onClose, wishes, onRefresh, onPreviewWish, 
 
                       {/* Mock Goal Text */}
                       <div 
-                        className={`absolute -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center shadow-sm cursor-grab active:cursor-grabbing hover:outline hover:outline-1 hover:outline-dashed hover:outline-indigo-500/80 hover:outline-offset-2 transition-transform duration-75 ${
+                        className={`absolute -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center shadow-sm cursor-grab active:cursor-grabbing hover:outline hover:outline-1 hover:outline-dashed hover:outline-indigo-500/80 hover:outline-offset-2 ${
                           currentTpl.goalBgVisible !== false ? "rounded-lg border border-white/5 bg-black/40 backdrop-blur-sm" : ""
                         } ${draggingItem === 'goal' ? 'outline outline-1 outline-solid outline-indigo-500 ring-4 ring-indigo-500/20' : ''}`}
                         style={{
