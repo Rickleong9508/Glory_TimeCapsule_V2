@@ -602,14 +602,6 @@ app.delete("/api/wishes/:id", async (req, res) => {
 // --- VITE MIDDLEWARE CONFIGURATION ---
 
 async function initServer() {
-  // Run DB Seeds and Migration on Startup
-  if (isSupabaseConfigured) {
-    await seedDefaultTemplates();
-    await migrateLocalDataToSupabase();
-  } else {
-    console.warn("[Supabase Warning] Server started in offline fallback mode. Database operations are disabled until credentials are set in .env.");
-  }
-
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
       server: { middlewareMode: true },
@@ -629,6 +621,19 @@ async function initServer() {
   });
 }
 
-initServer().catch((error) => {
-  console.error("Failed to start server:", error);
-});
+// Run DB Seeds and Migration on module load
+if (isSupabaseConfigured) {
+  seedDefaultTemplates().catch(console.error);
+  migrateLocalDataToSupabase().catch(console.error);
+} else {
+  console.warn("[Supabase Warning] Server running in offline fallback mode. Database operations are disabled until credentials are set in .env.");
+}
+
+// Do not start the Express listener if running as a serverless function on Vercel
+if (!process.env.VERCEL) {
+  initServer().catch((error) => {
+    console.error("Failed to start server:", error);
+  });
+}
+
+export default app;
