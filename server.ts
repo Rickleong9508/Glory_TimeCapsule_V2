@@ -2,7 +2,6 @@ import express from "express";
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
-import { createServer as createViteServer } from "vite";
 import { WishRecord, PosterTemplate, ColleagueGroup } from "./src/types";
 import { supabase, isSupabaseConfigured } from "./src/supabase";
 import { Buffer } from "buffer";
@@ -219,6 +218,21 @@ async function seedDefaultTemplates() {
 // Migration function
 async function migrateLocalDataToSupabase() {
   try {
+    // Check if wishes already exist in Supabase to avoid double migration on cold starts
+    const { count, error: countError } = await supabase
+      .from("wishes")
+      .select("*", { count: "exact", head: true });
+
+    if (countError) {
+      console.error("[Supabase Migration] Error checking database count:", countError);
+      return;
+    }
+
+    if (count !== null && count > 0) {
+      console.log("[Supabase Migration] Supabase database already contains data. Skipping local file migration.");
+      return;
+    }
+
     // 1. Migrate Wishes
     if (fs.existsSync(DB_FILE)) {
       const content = fs.readFileSync(DB_FILE, "utf-8");
@@ -252,8 +266,12 @@ async function migrateLocalDataToSupabase() {
           }
         }
 
-        fs.renameSync(DB_FILE, `${DB_FILE}.migrated`);
-        console.log(`[Supabase Migration] Migration completed. Archived local wishes file to ${DB_FILE}.migrated`);
+        try {
+          fs.renameSync(DB_FILE, `${DB_FILE}.migrated`);
+          console.log(`[Supabase Migration] Migration completed. Archived local wishes file to ${DB_FILE}.migrated`);
+        } catch (fsErr) {
+          console.warn("[Supabase Migration Warning] Could not rename local wishes file (read-only filesystem):", fsErr);
+        }
       }
     }
 
@@ -290,8 +308,12 @@ async function migrateLocalDataToSupabase() {
         }
       }
 
-      fs.renameSync(POSTER_FILE, `${POSTER_FILE}.migrated`);
-      console.log(`[Supabase Migration] Migration completed. Archived local templates file to ${POSTER_FILE}.migrated`);
+      try {
+        fs.renameSync(POSTER_FILE, `${POSTER_FILE}.migrated`);
+        console.log(`[Supabase Migration] Migration completed. Archived local templates file to ${POSTER_FILE}.migrated`);
+      } catch (fsErr) {
+        console.warn("[Supabase Migration Warning] Could not rename local templates file (read-only filesystem):", fsErr);
+      }
     }
   } catch (error) {
     console.error("[Supabase Migration] Migration failed:", error);
@@ -602,7 +624,8 @@ app.delete("/api/wishes/:id", async (req, res) => {
 // --- VITE MIDDLEWARE CONFIGURATION ---
 
 async function initServer() {
-  if (process.env.NODE_ENV !== "production") {
+  if (process.env.NODE_ENV !== "production" && !process.env.VERCEL) {
+    const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
