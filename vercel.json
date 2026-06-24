@@ -1,9 +1,11 @@
 {
   "version": 2,
   "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/index.ts"
-    }
+    { "source": "/api/wishes/query", "destination": "/api/wishes" },
+    { "source": "/api/wishes/:id", "destination": "/api/wishes" },
+    { "source": "/api/poster-templates/copy", "destination": "/api/poster-templates" },
+    { "source": "/api/poster-templates", "destination": "/api/poster-templates" },
+    { "source": "/api/wishes", "destination": "/api/wishes" },
+    { "source": "/api/health", "destination": "/api/health" }
   ]
 }
