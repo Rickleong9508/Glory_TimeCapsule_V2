@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { supabase, isConfigured } from "./_lib/supabase";
+import { supabase, isConfigured } from "./_lib/supabase.js";
 import { Buffer } from "buffer";
 
 function setCors(res: VercelResponse) {
