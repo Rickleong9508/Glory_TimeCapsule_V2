@@ -45,6 +45,7 @@ const getDefaultTemplate = (group: ColleagueGroup): PosterTemplate => {
     goalPaddingBottom: 20,
     goalPaddingLeft: 40,
     goalPaddingRight: 40,
+    goalLineHeight: 1.5,
   };
 };
 
@@ -1519,9 +1520,9 @@ export default function AdminPanel({ onClose, wishes, onRefresh, onPreviewWish, 
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-3.5">
+                      <div className="grid grid-cols-3 gap-3.5">
                         <div className="space-y-1">
-                          <label className="text-[10px] font-mono text-slate-400">文字大小 (Font Size)</label>
+                          <label className="text-[10px] font-mono text-slate-400">{lang === "zh" ? "文字大小 (Font Size)" : "Font Size"}</label>
                           <input 
                             type="number" min="10" max="48" value={currentTpl.goalSize}
                             onChange={(e) => updateTplField("goalSize", Number(e.target.value))}
@@ -1529,19 +1530,27 @@ export default function AdminPanel({ onClose, wishes, onRefresh, onPreviewWish, 
                           />
                         </div>
                         <div className="space-y-1">
-                          <label className="text-[10px] font-mono text-slate-400">文字颜色 (Hex Color)</label>
+                          <label className="text-[10px] font-mono text-slate-400">{lang === "zh" ? "文字颜色 (Hex)" : "Hex Color"}</label>
                           <div className="flex gap-2">
                             <input 
                               type="color" value={currentTpl.goalColor}
                               onChange={(e) => updateTplField("goalColor", e.target.value)}
-                              className="w-7 h-5 border-none p-0 bg-transparent rounded cursor-pointer"
+                              className="w-7 h-5 border-none p-0 bg-transparent rounded cursor-pointer shrink-0"
                             />
                             <input 
                               type="text" value={currentTpl.goalColor}
                               onChange={(e) => updateTplField("goalColor", e.target.value)}
-                              className="w-full text-[10px] font-mono bg-slate-950 border border-slate-800 rounded px-1 text-center text-slate-300"
+                              className="w-full text-[10px] font-mono bg-slate-950 border border-slate-800 rounded px-1 text-center text-slate-300 min-w-0"
                             />
                           </div>
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-mono text-slate-400">{lang === "zh" ? "行上下间距 (Line Height)" : "Line Height"}</label>
+                          <input 
+                            type="number" min="1" max="3" step="0.1" value={currentTpl.goalLineHeight !== undefined ? currentTpl.goalLineHeight : 1.5}
+                            onChange={(e) => updateTplField("goalLineHeight", Number(e.target.value))}
+                            className="w-full px-2 py-1 bg-slate-950 border border-slate-800 rounded text-xs text-indigo-400 text-center"
+                          />
                         </div>
                       </div>
                     </div>
@@ -1720,10 +1729,11 @@ export default function AdminPanel({ onClose, wishes, onRefresh, onPreviewWish, 
                         title="按住鼠标拖动来调整目标金句卡位置 / Drag to reposition goal card"
                       >
                         <p 
-                          className="italic leading-normal select-none overflow-hidden text-ellipsis line-clamp-3 pointer-events-none w-full"
+                          className="italic select-none overflow-hidden text-ellipsis line-clamp-3 pointer-events-none w-full"
                           style={{
                             fontSize: `${currentTpl.goalSize * 0.45}px`,
-                            color: currentTpl.goalColor
+                            color: currentTpl.goalColor,
+                            lineHeight: currentTpl.goalLineHeight ?? 1.5
                           }}
                         >
                           "{sampleWish.wish}"

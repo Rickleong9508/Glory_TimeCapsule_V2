@@ -175,7 +175,8 @@ export default function PosterCenter({ wishes, lang, previewIdentifier, onClearP
       goalY: 65,
       goalWidth: 80,
       goalColor: "#ECFDF5",
-      goalSize: 18
+      goalSize: 18,
+      goalLineHeight: 1.5,
     };
 
     const getCorsSafeUrl = (url: string) => {
@@ -355,7 +356,7 @@ export default function PosterCenter({ wishes, lang, previewIdentifier, onClearP
 
       const showBgBox = (template.goalBgVisible ?? true) !== false;
       const wishVal = `“${activeWish.wish}”`;
-      const approxLineHeight = goalFontSize * 1.5;
+      const approxLineHeight = goalFontSize * (template.goalLineHeight ?? 1.5);
       
       // Compute wrapping lines
       const hasSpaces = wishVal.includes(" ");
@@ -650,10 +651,11 @@ export default function PosterCenter({ wishes, lang, previewIdentifier, onClearP
                   }}
                 >
                   <p 
-                    className="font-normal italic leading-relaxed tracking-tight text-white/95 select-text max-h-[140px] overflow-hidden text-ellipsis w-full"
+                    className="font-normal italic tracking-tight text-white/95 select-text max-h-[140px] overflow-hidden text-ellipsis w-full"
                     style={{
                       fontSize: `${(activeTemplate?.goalSize ?? 18) * 0.72}px`,
-                      color: activeTemplate?.goalColor ?? "#E2E8F0"
+                      color: activeTemplate?.goalColor ?? "#E2E8F0",
+                      lineHeight: activeTemplate?.goalLineHeight ?? 1.5
                     }}
                   >
                     “{activeWish.wish}”

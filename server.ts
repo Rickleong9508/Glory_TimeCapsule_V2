@@ -19,12 +19,12 @@ const DB_FILE = path.join(DB_DIR, "wishes.json");
 const POSTER_FILE = path.join(DB_DIR, "poster_templates.json");
 
 const DEFAULT_POSTERS: Record<string, PosterTemplate> = {
-  Visionary: { group: "Visionary", background: "", photoX: 50, photoY: 28, photoSize: 180, nameX: 50, nameY: 44, nameColor: "#FFFFFF", nameSize: 28, nameAlign: "center", emailX: 50, emailY: 49, emailColor: "#94A3B8", emailSize: 16, emailAlign: "center", groupX: 50, groupY: 41, groupColor: "#60A5FA", groupSize: 14, groupVisible: true, groupAlign: "center", goalX: 50, goalY: 65, goalWidth: 80, goalColor: "#E0E7FF", goalSize: 18, goalAlign: "center", goalBgVisible: true },
-  Lead: { group: "Lead", background: "", photoX: 50, photoY: 28, photoSize: 180, nameX: 50, nameY: 44, nameColor: "#FFFFFF", nameSize: 28, nameAlign: "center", emailX: 50, emailY: 49, emailColor: "#94A3B8", emailSize: 16, emailAlign: "center", groupX: 50, groupY: 41, groupColor: "#F59E0B", groupSize: 14, groupVisible: true, groupAlign: "center", goalX: 50, goalY: 65, goalWidth: 80, goalColor: "#FEF3C7", goalSize: 18, goalAlign: "center", goalBgVisible: true },
-  Builder: { group: "Builder", background: "", photoX: 50, photoY: 28, photoSize: 180, nameX: 50, nameY: 44, nameColor: "#FFFFFF", nameSize: 28, nameAlign: "center", emailX: 50, emailY: 49, emailColor: "#94A3B8", emailSize: 16, emailAlign: "center", groupX: 50, groupY: 41, groupColor: "#10B981", groupSize: 14, groupVisible: true, groupAlign: "center", goalX: 50, goalY: 65, goalWidth: 80, goalColor: "#ECFDF5", goalSize: 18, goalAlign: "center", goalBgVisible: true },
-  Connector: { group: "Connector", background: "", photoX: 50, photoY: 28, photoSize: 180, nameX: 50, nameY: 44, nameColor: "#FFFFFF", nameSize: 28, nameAlign: "center", emailX: 50, emailY: 49, emailColor: "#94A3B8", emailSize: 16, emailAlign: "center", groupX: 50, groupY: 41, groupColor: "#EC4899", groupSize: 14, groupVisible: true, groupAlign: "center", goalX: 50, goalY: 65, goalWidth: 80, goalColor: "#FCE7F3", goalSize: 18, goalAlign: "center", goalBgVisible: true },
-  Pragmatist: { group: "Pragmatist", background: "", photoX: 50, photoY: 28, photoSize: 180, nameX: 50, nameY: 44, nameColor: "#FFFFFF", nameSize: 28, nameAlign: "center", emailX: 50, emailY: 49, emailColor: "#94A3B8", emailSize: 16, emailAlign: "center", groupX: 50, groupY: 41, groupColor: "#3B82F6", groupSize: 14, groupVisible: true, groupAlign: "center", goalX: 50, goalY: 65, goalWidth: 80, goalColor: "#E0F2FE", goalSize: 18, goalAlign: "center", goalBgVisible: true },
-  Skeptic: { group: "Skeptic", background: "", photoX: 50, photoY: 28, photoSize: 180, nameX: 50, nameY: 44, nameColor: "#FFFFFF", nameSize: 28, nameAlign: "center", emailX: 50, emailY: 49, emailColor: "#94A3B8", emailSize: 16, emailAlign: "center", groupX: 50, groupY: 41, groupColor: "#64748B", groupSize: 14, groupVisible: true, groupAlign: "center", goalX: 50, goalY: 65, goalWidth: 80, goalColor: "#F1F5F9", goalSize: 18, goalAlign: "center", goalBgVisible: true }
+  Visionary: { group: "Visionary", background: "", photoX: 50, photoY: 28, photoSize: 180, nameX: 50, nameY: 44, nameColor: "#FFFFFF", nameSize: 28, nameAlign: "center", emailX: 50, emailY: 49, emailColor: "#94A3B8", emailSize: 16, emailAlign: "center", groupX: 50, groupY: 41, groupColor: "#60A5FA", groupSize: 14, groupVisible: true, groupAlign: "center", goalX: 50, goalY: 65, goalWidth: 80, goalColor: "#E0E7FF", goalSize: 18, goalAlign: "center", goalBgVisible: true, goalLineHeight: 1.5 },
+  Lead: { group: "Lead", background: "", photoX: 50, photoY: 28, photoSize: 180, nameX: 50, nameY: 44, nameColor: "#FFFFFF", nameSize: 28, nameAlign: "center", emailX: 50, emailY: 49, emailColor: "#94A3B8", emailSize: 16, emailAlign: "center", groupX: 50, groupY: 41, groupColor: "#F59E0B", groupSize: 14, groupVisible: true, groupAlign: "center", goalX: 50, goalY: 65, goalWidth: 80, goalColor: "#FEF3C7", goalSize: 18, goalAlign: "center", goalBgVisible: true, goalLineHeight: 1.5 },
+  Builder: { group: "Builder", background: "", photoX: 50, photoY: 28, photoSize: 180, nameX: 50, nameY: 44, nameColor: "#FFFFFF", nameSize: 28, nameAlign: "center", emailX: 50, emailY: 49, emailColor: "#94A3B8", emailSize: 16, emailAlign: "center", groupX: 50, groupY: 41, groupColor: "#10B981", groupSize: 14, groupVisible: true, groupAlign: "center", goalX: 50, goalY: 65, goalWidth: 80, goalColor: "#ECFDF5", goalSize: 18, goalAlign: "center", goalBgVisible: true, goalLineHeight: 1.5 },
+  Connector: { group: "Connector", background: "", photoX: 50, photoY: 28, photoSize: 180, nameX: 50, nameY: 44, nameColor: "#FFFFFF", nameSize: 28, nameAlign: "center", emailX: 50, emailY: 49, emailColor: "#94A3B8", emailSize: 16, emailAlign: "center", groupX: 50, groupY: 41, groupColor: "#EC4899", groupSize: 14, groupVisible: true, groupAlign: "center", goalX: 50, goalY: 65, goalWidth: 80, goalColor: "#FCE7F3", goalSize: 18, goalAlign: "center", goalBgVisible: true, goalLineHeight: 1.5 },
+  Pragmatist: { group: "Pragmatist", background: "", photoX: 50, photoY: 28, photoSize: 180, nameX: 50, nameY: 44, nameColor: "#FFFFFF", nameSize: 28, nameAlign: "center", emailX: 50, emailY: 49, emailColor: "#94A3B8", emailSize: 16, emailAlign: "center", groupX: 50, groupY: 41, groupColor: "#3B82F6", groupSize: 14, groupVisible: true, groupAlign: "center", goalX: 50, goalY: 65, goalWidth: 80, goalColor: "#E0F2FE", goalSize: 18, goalAlign: "center", goalBgVisible: true, goalLineHeight: 1.5 },
+  Skeptic: { group: "Skeptic", background: "", photoX: 50, photoY: 28, photoSize: 180, nameX: 50, nameY: 44, nameColor: "#FFFFFF", nameSize: 28, nameAlign: "center", emailX: 50, emailY: 49, emailColor: "#94A3B8", emailSize: 16, emailAlign: "center", groupX: 50, groupY: 41, groupColor: "#64748B", groupSize: 14, groupVisible: true, groupAlign: "center", goalX: 50, goalY: 65, goalWidth: 80, goalColor: "#F1F5F9", goalSize: 18, goalAlign: "center", goalBgVisible: true, goalLineHeight: 1.5 }
 };
 
 // Database Schema mappings
@@ -86,6 +86,7 @@ function mapTemplateFromDb(row: any): PosterTemplate {
     goalPaddingBottom: row.goal_padding_bottom ?? 20,
     goalPaddingLeft: row.goal_padding_left ?? 40,
     goalPaddingRight: row.goal_padding_right ?? 40,
+    goalLineHeight: row.goal_line_height ?? 1.5,
   };
 }
 
@@ -123,6 +124,7 @@ function mapTemplateToDb(t: PosterTemplate): any {
     goal_padding_bottom: t.goalPaddingBottom,
     goal_padding_left: t.goalPaddingLeft,
     goal_padding_right: t.goalPaddingRight,
+    goal_line_height: t.goalLineHeight,
   };
 }
 
@@ -362,7 +364,7 @@ apiRouter.get("/poster-templates", async (req, res) => {
 // POST update poster template
 apiRouter.post("/poster-templates", async (req, res) => {
   try {
-    const { group, background, photoX, photoY, photoSize, nameX, nameY, nameColor, nameSize, nameAlign, emailX, emailY, emailColor, emailSize, emailAlign, groupX, groupY, groupColor, groupSize, groupVisible, groupAlign, goalX, goalY, goalWidth, goalColor, goalSize, goalAlign, goalBgVisible, goalPaddingTop, goalPaddingBottom, goalPaddingLeft, goalPaddingRight } = req.body;
+    const { group, background, photoX, photoY, photoSize, nameX, nameY, nameColor, nameSize, nameAlign, emailX, emailY, emailColor, emailSize, emailAlign, groupX, groupY, groupColor, groupSize, groupVisible, groupAlign, goalX, goalY, goalWidth, goalColor, goalSize, goalAlign, goalBgVisible, goalPaddingTop, goalPaddingBottom, goalPaddingLeft, goalPaddingRight, goalLineHeight } = req.body;
     
     if (!group) {
       res.status(400).json({ success: false, error: "Group name is required" });
@@ -378,7 +380,7 @@ apiRouter.post("/poster-templates", async (req, res) => {
     if (fetchError) throw fetchError;
 
     const current: PosterTemplate = currentDb ? mapTemplateFromDb(currentDb) : (DEFAULT_POSTERS[group] || {
-      group: group as ColleagueGroup, background: "", photoX: 50, photoY: 28, photoSize: 180, nameX: 50, nameY: 44, nameColor: "#FFFFFF", nameSize: 28, nameAlign: "center", emailX: 50, emailY: 49, emailColor: "#94A3B8", emailSize: 16, emailAlign: "center", groupX: 50, groupY: 41, groupColor: "#60A5FA", groupSize: 14, groupVisible: true, groupAlign: "center", goalX: 50, goalY: 65, goalWidth: 80, goalColor: "#E0E7FF", goalSize: 18, goalAlign: "center", goalBgVisible: true
+      group: group as ColleagueGroup, background: "", photoX: 50, photoY: 28, photoSize: 180, nameX: 50, nameY: 44, nameColor: "#FFFFFF", nameSize: 28, nameAlign: "center", emailX: 50, emailY: 49, emailColor: "#94A3B8", emailSize: 16, emailAlign: "center", groupX: 50, groupY: 41, groupColor: "#60A5FA", groupSize: 14, groupVisible: true, groupAlign: "center", goalX: 50, goalY: 65, goalWidth: 80, goalColor: "#E0E7FF", goalSize: 18, goalAlign: "center", goalBgVisible: true, goalLineHeight: 1.5
     });
 
     let finalBackground = background;
@@ -422,6 +424,7 @@ apiRouter.post("/poster-templates", async (req, res) => {
       goalPaddingBottom: typeof goalPaddingBottom === "number" ? goalPaddingBottom : (current.goalPaddingBottom !== undefined ? current.goalPaddingBottom : 20),
       goalPaddingLeft: typeof goalPaddingLeft === "number" ? goalPaddingLeft : (current.goalPaddingLeft !== undefined ? current.goalPaddingLeft : 40),
       goalPaddingRight: typeof goalPaddingRight === "number" ? goalPaddingRight : (current.goalPaddingRight !== undefined ? current.goalPaddingRight : 40),
+      goalLineHeight: typeof goalLineHeight === "number" ? goalLineHeight : (current.goalLineHeight !== undefined ? current.goalLineHeight : 1.5),
     };
 
     const { error: saveError } = await supabase

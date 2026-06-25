@@ -39,8 +39,10 @@ function mapFromDb(row: any) {
     goalX: row.goal_x ?? 50, goalY: row.goal_y ?? 65, goalWidth: row.goal_width ?? 80,
     goalColor: row.goal_color || "#E0E7FF", goalSize: row.goal_size ?? 18, goalAlign: row.goal_align || "center",
     goalBgVisible: row.goal_bg_visible ?? true, goalPaddingTop: row.goal_padding_top ?? 20,
-    goalPaddingBottom: row.goal_padding_bottom ?? 20, goalPaddingLeft: row.goal_padding_left ?? 40,
+    goalPaddingBottom: row.goal_padding_bottom ?? 20,
+    goalPaddingLeft: row.goal_padding_left ?? 40,
     goalPaddingRight: row.goal_padding_right ?? 40,
+    goalLineHeight: row.goal_line_height ?? 1.5,
   };
 }
 
@@ -54,6 +56,7 @@ function mapToDb(t: any) {
     goal_width: t.goalWidth, goal_color: t.goalColor, goal_size: t.goalSize, goal_align: t.goalAlign,
     goal_bg_visible: t.goalBgVisible, goal_padding_top: t.goalPaddingTop, goal_padding_bottom: t.goalPaddingBottom,
     goal_padding_left: t.goalPaddingLeft, goal_padding_right: t.goalPaddingRight,
+    goal_line_height: t.goalLineHeight,
   };
 }
 
@@ -102,7 +105,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       // Fetch current to fill defaults
       const { data: currentDb } = await supabase.from("poster_templates").select("*").eq("group", group).maybeSingle();
-      const current = currentDb ? mapFromDb(currentDb) : { group, background: "", photoX: 50, photoY: 28, photoSize: 180, nameX: 50, nameY: 44, nameColor: "#FFFFFF", nameSize: 28, nameAlign: "center", emailX: 50, emailY: 49, emailColor: "#94A3B8", emailSize: 16, emailAlign: "center", groupX: 50, groupY: 41, groupColor: "#60A5FA", groupSize: 14, groupVisible: true, groupAlign: "center", goalX: 50, goalY: 65, goalWidth: 80, goalColor: "#E0E7FF", goalSize: 18, goalAlign: "center", goalBgVisible: true, goalPaddingTop: 20, goalPaddingBottom: 20, goalPaddingLeft: 40, goalPaddingRight: 40 };
+      const current = currentDb ? mapFromDb(currentDb) : { group, background: "", photoX: 50, photoY: 28, photoSize: 180, nameX: 50, nameY: 44, nameColor: "#FFFFFF", nameSize: 28, nameAlign: "center", emailX: 50, emailY: 49, emailColor: "#94A3B8", emailSize: 16, emailAlign: "center", groupX: 50, groupY: 41, groupColor: "#60A5FA", groupSize: 14, groupVisible: true, groupAlign: "center", goalX: 50, goalY: 65, goalWidth: 80, goalColor: "#E0E7FF", goalSize: 18, goalAlign: "center", goalBgVisible: true, goalPaddingTop: 20, goalPaddingBottom: 20, goalPaddingLeft: 40, goalPaddingRight: 40, goalLineHeight: 1.5 };
 
       let finalBackground = body.background;
       if (finalBackground && finalBackground.startsWith("data:image/")) {
@@ -143,6 +146,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         goalPaddingBottom: typeof body.goalPaddingBottom === "number" ? body.goalPaddingBottom : current.goalPaddingBottom,
         goalPaddingLeft: typeof body.goalPaddingLeft === "number" ? body.goalPaddingLeft : current.goalPaddingLeft,
         goalPaddingRight: typeof body.goalPaddingRight === "number" ? body.goalPaddingRight : current.goalPaddingRight,
+        goalLineHeight: typeof body.goalLineHeight === "number" ? body.goalLineHeight : current.goalLineHeight,
       };
 
       const { error: saveError } = await supabase.from("poster_templates").upsert(mapToDb(updated));

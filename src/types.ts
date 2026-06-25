@@ -45,6 +45,7 @@ export interface PosterTemplate {
   goalWidth: number; // percentage of poster width
   goalColor: string; // hex
   goalSize: number; // pixels
+  goalLineHeight?: number; // line height multiplier
   goalAlign?: "left" | "center" | "right"; // text alignment
   goalBgVisible?: boolean; // whether to show the background box wrapper
   goalPaddingTop?: number;
