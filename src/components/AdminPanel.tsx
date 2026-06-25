@@ -432,13 +432,16 @@ export default function AdminPanel({ onClose, wishes, onRefresh, onPreviewWish, 
         ctx.drawImage(img, 0, 0, 640, 960);
         const dataUrl = canvas.toDataURL("image/jpeg", 0.75);
         
-        setPosterTemplates((prev) => ({
-          ...prev,
-          [selectedPosterGroup]: {
-            ...prev[selectedPosterGroup],
-            background: dataUrl
-          }
-        }));
+        setPosterTemplates((prev) => {
+          const current = prev[selectedPosterGroup] || getDefaultTemplate(selectedPosterGroup);
+          return {
+            ...prev,
+            [selectedPosterGroup]: {
+              ...current,
+              background: dataUrl
+            }
+          };
+        });
         setPosterMessage(null);
       };
       img.src = e.target?.result as string;
