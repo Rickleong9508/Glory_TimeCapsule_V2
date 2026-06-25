@@ -178,6 +178,13 @@ export default function PosterCenter({ wishes, lang, previewIdentifier, onClearP
       goalSize: 18
     };
 
+    const getCorsSafeUrl = (url: string) => {
+      if (!url) return "";
+      if (url.startsWith("data:")) return url;
+      const separator = url.includes("?") ? "&" : "?";
+      return `${url}${separator}t=${Date.now()}`;
+    };
+
     try {
       // Ensure google web fonts are loaded so they draw properly on Canvas
       if (typeof document !== "undefined" && document.fonts) {
@@ -196,6 +203,7 @@ export default function PosterCenter({ wishes, lang, previewIdentifier, onClearP
       // 1. Draw Background
       if (template.background) {
         const bgImg = new Image();
+        bgImg.crossOrigin = "anonymous";
         await new Promise((resolve) => {
           bgImg.onload = () => {
             ctx.drawImage(bgImg, 0, 0, width, height);
@@ -206,7 +214,7 @@ export default function PosterCenter({ wishes, lang, previewIdentifier, onClearP
             drawVerticalGradient(ctx, width, height, groupVal);
             resolve(false);
           };
-          bgImg.src = template.background;
+          bgImg.src = getCorsSafeUrl(template.background);
         });
       } else {
         drawVerticalGradient(ctx, width, height, groupVal);
@@ -243,6 +251,7 @@ export default function PosterCenter({ wishes, lang, previewIdentifier, onClearP
 
       // 2. Load and Draw employee profile photo
       const photoImg = new Image();
+      photoImg.crossOrigin = "anonymous";
       const phX = (template.photoX / 100) * width;
       const phY = (template.photoY / 100) * height;
       const r = template.photoSize / 2;
@@ -273,7 +282,7 @@ export default function PosterCenter({ wishes, lang, previewIdentifier, onClearP
           ctx.fill();
           resolve(false);
         };
-        photoImg.src = activeWish.photoUrl;
+        photoImg.src = getCorsSafeUrl(activeWish.photoUrl);
       });
 
       // 3. Draw Colleague's Name
