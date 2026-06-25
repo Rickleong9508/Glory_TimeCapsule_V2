@@ -11,6 +11,43 @@ interface AdminPanelProps {
   lang: Language;
 }
 
+const getDefaultTemplate = (group: ColleagueGroup): PosterTemplate => {
+  return {
+    group,
+    background: "",
+    photoX: 50,
+    photoY: 28,
+    photoSize: 180,
+    nameX: 50,
+    nameY: 44,
+    nameColor: "#FFFFFF",
+    nameSize: 28,
+    nameAlign: "center",
+    emailX: 50,
+    emailY: 49,
+    emailColor: "#94A3B8",
+    emailSize: 16,
+    emailAlign: "center",
+    groupX: 50,
+    groupY: 41,
+    groupColor: group === "Lead" ? "#F59E0B" : group === "Builder" ? "#10B981" : group === "Connector" ? "#EC4899" : group === "Pragmatist" ? "#3B82F6" : group === "Skeptic" ? "#64748B" : "#60A5FA",
+    groupSize: 14,
+    groupVisible: true,
+    groupAlign: "center",
+    goalX: 50,
+    goalY: 65,
+    goalWidth: 80,
+    goalColor: "#E0E7FF",
+    goalSize: 18,
+    goalAlign: "center",
+    goalBgVisible: true,
+    goalPaddingTop: 20,
+    goalPaddingBottom: 20,
+    goalPaddingLeft: 40,
+    goalPaddingRight: 40,
+  };
+};
+
 export default function AdminPanel({ onClose, wishes, onRefresh, onPreviewWish, lang }: AdminPanelProps) {
   const t = translations[lang];
   
@@ -426,8 +463,7 @@ export default function AdminPanel({ onClose, wishes, onRefresh, onPreviewWish, 
   };
 
   const handleSavePosterTemplate = async () => {
-    const currentTpl = posterTemplates[selectedPosterGroup];
-    if (!currentTpl) return;
+    const currentTpl = posterTemplates[selectedPosterGroup] || getDefaultTemplate(selectedPosterGroup);
 
     setIsSavingPoster(true);
     setPosterMessage(null);
@@ -504,8 +540,7 @@ export default function AdminPanel({ onClose, wishes, onRefresh, onPreviewWish, 
       pctY = Math.max(0, Math.min(100, pctY));
 
       setPosterTemplates((prev) => {
-        const current = prev[selectedPosterGroup];
-        if (!current) return prev;
+        const current = prev[selectedPosterGroup] || getDefaultTemplate(selectedPosterGroup);
         return {
           ...prev,
           [selectedPosterGroup]: {
@@ -534,13 +569,16 @@ export default function AdminPanel({ onClose, wishes, onRefresh, onPreviewWish, 
   }, [draggingItem, selectedPosterGroup]);
 
   const updateTplField = (field: keyof PosterTemplate, val: any) => {
-    setPosterTemplates((prev) => ({
-      ...prev,
-      [selectedPosterGroup]: {
-        ...prev[selectedPosterGroup],
-        [field]: val
-      }
-    }));
+    setPosterTemplates((prev) => {
+      const current = prev[selectedPosterGroup] || getDefaultTemplate(selectedPosterGroup);
+      return {
+        ...prev,
+        [selectedPosterGroup]: {
+          ...current,
+          [field]: val
+        }
+      };
+    });
   };
 
   return (
@@ -976,31 +1014,7 @@ export default function AdminPanel({ onClose, wishes, onRefresh, onPreviewWish, 
                 正在加载底版参数...
               </div>
             ) : (() => {
-              const currentTpl = posterTemplates[selectedPosterGroup] || {
-                group: selectedPosterGroup,
-                background: "",
-                photoX: 50,
-                photoY: 28,
-                photoSize: 180,
-                nameX: 50,
-                nameY: 44,
-                nameColor: "#FFFFFF",
-                nameSize: 28,
-                emailX: 50,
-                emailY: 49,
-                emailColor: "#94A3B8",
-                emailSize: 16,
-                groupX: 50,
-                groupY: 41,
-                groupColor: "#60A5FA",
-                groupSize: 14,
-                groupVisible: true,
-                goalX: 50,
-                goalY: 65,
-                goalWidth: 80,
-                goalColor: "#E2E8F0",
-                goalSize: 18
-              };
+              const currentTpl = posterTemplates[selectedPosterGroup] || getDefaultTemplate(selectedPosterGroup);
 
               // Let's find a sample colleague wish for visual preview
               const sampleWish = wishes.find(w => (w.group || "Builder") === selectedPosterGroup) || wishes[0] || {
