@@ -378,9 +378,9 @@ export default function PosterCenter({ wishes, lang, previewIdentifier, onClearP
       }
       lines.push(line);
 
-      // Vertically center the card box around gY, matching the CSS flex/translate behaviour
+      // Top-align the card box at gY, matching the CSS top-aligned behavior
       const boxHeight = lines.length * approxLineHeight + padTopScaled + padBottomScaled;
-      const cardTopY = gY - boxHeight / 2;
+      const cardTopY = gY;
 
       if (showBgBox) {
         // Draw a subtle translucent card background to capture modern frosted glass
@@ -633,7 +633,7 @@ export default function PosterCenter({ wishes, lang, previewIdentifier, onClearP
 
                 {/* 4. Goal / Wish Content Box */}
                 <div 
-                  className={`absolute -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center transition-all ${
+                  className={`absolute -translate-x-1/2 flex flex-col justify-center transition-all ${
                     (activeTemplate?.goalBgVisible ?? true) !== false
                       ? "rounded-xl border border-white/5 bg-black/45 backdrop-blur-sm"
                       : ""

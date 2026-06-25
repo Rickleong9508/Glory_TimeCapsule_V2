@@ -1711,7 +1711,7 @@ export default function AdminPanel({ onClose, wishes, onRefresh, onPreviewWish, 
 
                       {/* Mock Goal Text */}
                       <div 
-                        className={`absolute -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center shadow-sm cursor-grab active:cursor-grabbing hover:outline hover:outline-1 hover:outline-dashed hover:outline-indigo-500/80 hover:outline-offset-2 ${
+                        className={`absolute -translate-x-1/2 flex flex-col justify-center shadow-sm cursor-grab active:cursor-grabbing hover:outline hover:outline-1 hover:outline-dashed hover:outline-indigo-500/80 hover:outline-offset-2 ${
                           currentTpl.goalBgVisible !== false ? "rounded-lg border border-white/5 bg-black/40 backdrop-blur-sm" : ""
                         } ${draggingItem === 'goal' ? 'outline outline-1 outline-solid outline-indigo-500 ring-4 ring-indigo-500/20' : ''}`}
                         style={{
